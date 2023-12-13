@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Schema, model } from 'mongoose';
 import { TCourse, TDetails, TTags } from './course.interface';
 

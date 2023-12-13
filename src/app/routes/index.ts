@@ -22,7 +22,7 @@ const moduleRoutes = [
   {
     path: '/categories',
     route: CategoriesRoutes,
-  },
+  }, 
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

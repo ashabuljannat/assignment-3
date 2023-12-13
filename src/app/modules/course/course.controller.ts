@@ -18,7 +18,7 @@ const getCourseByIdWithReviews = catchAsync(async (req, res) => {
   const { courseId } = req.params;
   const { result, result2 } =
     await CourseServices.getCourseByIdWithReviewsFromDB(courseId);
-  // console.log(result, result2, 22);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -31,9 +31,9 @@ const getCourseByIdWithReviews = catchAsync(async (req, res) => {
 });
 
 const getTheBestCourse = catchAsync(async (req, res) => {
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   const { cResult, rResult, averageRating, reviewCount } =
     await CourseServices.getTheBestCourseFromDB();
-  // console.log(cResult, rResult, 12);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
