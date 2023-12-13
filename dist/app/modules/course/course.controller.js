@@ -29,7 +29,6 @@ const createCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
 const getCourseByIdWithReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { courseId } = req.params;
     const { result, result2 } = yield course_service_1.CourseServices.getCourseByIdWithReviewsFromDB(courseId);
-    // console.log(result, result2, 22);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -41,8 +40,8 @@ const getCourseByIdWithReviews = (0, catchAsync_1.default)((req, res) => __await
     });
 }));
 const getTheBestCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const { cResult, rResult, averageRating, reviewCount } = yield course_service_1.CourseServices.getTheBestCourseFromDB();
-    // console.log(cResult, rResult, 12);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

@@ -10,12 +10,11 @@ const handleCastError = (
       message: err.message,
     },
   ];
-  
   const statusCode = 400;
 
   return {
     statusCode,
-    message: 'Invalid ID & cast error',
+    message: 'Invalid ID',
     errorSources,
   };
 };

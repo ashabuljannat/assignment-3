@@ -11,8 +11,7 @@ const handleValidationError = (
         message: val?.message,
       };
     },
-  ); 
- 
+  );   
   const statusCode = 400;
 
   return {

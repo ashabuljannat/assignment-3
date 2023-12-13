@@ -10,12 +10,11 @@ const handleDuplicateError = (err: any): TGenericErrorResponse => {
       message: `${extractedMessage} is already exists`,
     },
   ];
-
   const statusCode = 400;
 
   return { 
     statusCode,
-    message: 'Invalid Duplicate ID',
+    message: 'Invalid Duplicate Creation',
     errorSources,
   };
 };
