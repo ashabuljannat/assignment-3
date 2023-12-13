@@ -1,47 +1,28 @@
 import { z } from 'zod';
 
+const tagsValidationSchema = z.object({
+  name: z.string(),
+  isDeleted: z.boolean(),
+});
+
 const detailsValidationSchema = z.object({
   level: z.string(),
   description: z.string(),
 });
 
 const createCourseValidationSchema = z.object({
-  body: z.object({ 
-    title: z.string(),
-    prefix: z.string(),
-    code: z.number(),
-    credits: z.number(),
-    preRequisiteCourses: z.array(PreRequisiteCourseValidationSchema).optional(),
-    isDeleted: z.boolean().optional(),
-  }),
-});
-
-const updatePreRequisiteCourseValidationSchema = z.object({
-  course: z.string(),
-  isDeleted: z.boolean().optional(),
-});
-
-const updateCourseValidationSchema = z.object({
   body: z.object({
-    title: z.string().optional(),
-    prefix: z.string().optional(),
-    code: z.number().optional(),
-    credits: z.number().optional(),
-    preRequisiteCourses: z
-      .array(updatePreRequisiteCourseValidationSchema)
-      .optional(),
-    isDeleted: z.boolean().optional(),
+    title: z.string(), 
+    instructor: z.string(),
+    categoryId: z.string(),
+    price: z.number(),
+    tags: z.array(tagsValidationSchema),
+    startDate:z.string(),
+    endDate:z.string(),
+    language: z.string(),
+    provider: z.string(),
+    details: detailsValidationSchema
   }),
 });
 
-const facultiesWithCourseValidationSchema = z.object({
-  body: z.object({
-    faculties: z.array(z.string()),
-  }),
-});
-
-export const CourseValidations = {
-  createCourseValidationSchema,
-  updateCourseValidationSchema,
-  facultiesWithCourseValidationSchema,
-};
+export const CourseValidations = { createCourseValidationSchema };

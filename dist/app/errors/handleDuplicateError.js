@@ -2,9 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleDuplicateError = (err) => {
-    // Extract value within double quotes using regex
     const match = err.message.match(/"([^"]*)"/);
-    // The extracted value will be in the first capturing group
     const extractedMessage = match && match[1];
     const errorSources = [
         {
@@ -15,7 +13,7 @@ const handleDuplicateError = (err) => {
     const statusCode = 400;
     return {
         statusCode,
-        message: 'Invalid ID',
+        message: 'Invalid Duplicate ID',
         errorSources,
     };
 };

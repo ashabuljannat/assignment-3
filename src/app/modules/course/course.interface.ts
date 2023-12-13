@@ -5,21 +5,29 @@ export type TTags = {
   isDeleted: boolean;
 };
 
-export type TDetails = {
+export type TDetails = { 
   level: string;
   description: string;
 };
 
+export type TReview = {
+  courseId:  Types.ObjectId;
+  rating: number;
+  review: string;
+};
+ 
 export type TCourse = {
   title: string;
   instructor: string;
   categoryId: Types.ObjectId;
   price: number;
   tags: TTags[];
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   language: string;
   provider: string;
-  // durationInWeeks: number;
+  durationInWeeks: number;
   details: TDetails;
+  // review?:TReview;
+  review:Types.ObjectId;
 };

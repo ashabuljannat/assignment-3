@@ -23,7 +23,7 @@ const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
   //   .filter()
   //   .sort()
   //   .paginate()
-  //   .fields();
+  //   .fields(); 
 
   // const result = await courseQuery.modelQuery;
   // return result;

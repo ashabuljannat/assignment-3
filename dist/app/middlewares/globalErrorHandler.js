@@ -14,6 +14,7 @@ const globalErrorHandler = (err, req, res, next) => {
     //setting default values
     let statusCode = 500;
     let message = 'Something went wrong!';
+    let errorMessage = '';
     let errorSources = [
         {
             path: '',
@@ -25,23 +26,27 @@ const globalErrorHandler = (err, req, res, next) => {
         statusCode = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.statusCode;
         message = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.message;
         errorSources = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.errorSources;
+        errorMessage = errorSources.map(error => `${error.path} is ${error.message}.`).join(' ');
     }
     else if ((err === null || err === void 0 ? void 0 : err.name) === 'ValidationError') {
         const simplifiedError = (0, handleValidationError_1.default)(err);
         statusCode = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.statusCode;
         message = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.message;
+        errorMessage = `${err.errors.courseId.value} is not a valid ID!`;
         errorSources = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.errorSources;
     }
     else if ((err === null || err === void 0 ? void 0 : err.name) === 'CastError') {
         const simplifiedError = (0, handleCastError_1.default)(err);
         statusCode = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.statusCode;
         message = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.message;
+        errorMessage = `${err.value} is not a valid ID!`;
         errorSources = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.errorSources;
     }
     else if ((err === null || err === void 0 ? void 0 : err.code) === 11000) {
         const simplifiedError = (0, handleDuplicateError_1.default)(err);
         statusCode = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.statusCode;
         message = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.message;
+        errorMessage = `Value is already exist`;
         errorSources = simplifiedError === null || simplifiedError === void 0 ? void 0 : simplifiedError.errorSources;
     }
     else if (err instanceof AppError_1.default) {
@@ -67,9 +72,9 @@ const globalErrorHandler = (err, req, res, next) => {
     return res.status(statusCode).json({
         success: false,
         message,
-        errorSources,
-        err,
-        stack: config_1.default.NODE_ENV === 'development' ? err === null || err === void 0 ? void 0 : err.stack : null,
+        errorMessage,
+        errorDetails: err,
+        stack: config_1.default.node_env === 'development' ? err === null || err === void 0 ? void 0 : err.stack : null,
     });
 };
 exports.default = globalErrorHandler;

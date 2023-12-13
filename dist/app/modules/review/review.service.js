@@ -31,7 +31,7 @@ const getAllCoursesFromDB = (query) => __awaiter(void 0, void 0, void 0, functio
     //   .filter()
     //   .sort()
     //   .paginate()
-    //   .fields();
+    //   .fields(); 
     // const result = await courseQuery.modelQuery;
     // return result;
 });

@@ -20,79 +20,43 @@ const course_service_1 = require("./course.service");
 const createCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield course_service_1.CourseServices.createCourseIntoDB(req.body);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Course is created succesfully',
+        statusCode: http_status_1.default.CREATED,
+        message: 'Course created successfully',
         data: result,
     });
 }));
-const getAllCourses = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield course_service_1.CourseServices.getAllCoursesFromDB(req.query);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Course are retrieved successfully',
-        data: result,
-    });
-}));
-const getSingleCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield course_service_1.CourseServices.getSingleCourseFromDB(id);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Course is retrieved succesfully',
-        data: result,
-    });
-}));
-const updateCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield course_service_1.CourseServices.updateCourseIntoDB(id, req.body);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'course is updated succesfully',
-        data: result,
-    });
-}));
-const deleteCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const result = yield course_service_1.CourseServices.deleteCourseFromDB(id);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Course is deleted succesfully',
-        data: result,
-    });
-}));
-const assignFacultiesWithCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCourseByIdWithReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { courseId } = req.params;
-    const { faculties } = req.body;
-    const result = yield course_service_1.CourseServices.assignFacultiesWithCourseIntoDB(courseId, faculties);
+    const { result, result2 } = yield course_service_1.CourseServices.getCourseByIdWithReviewsFromDB(courseId);
+    // console.log(result, result2, 22);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Faculties assigned  succesfully',
-        data: result,
+        message: 'Course and Reviews retrieved successfully',
+        data: {
+            course: result,
+            reviews: result2,
+        },
     });
 }));
-const removeFacultiesFromCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { courseId } = req.params;
-    const { faculties } = req.body;
-    const result = yield course_service_1.CourseServices.removeFacultiesFromCourseFromDB(courseId, faculties);
+const getTheBestCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { cResult, rResult, averageRating, reviewCount } = yield course_service_1.CourseServices.getTheBestCourseFromDB();
+    // console.log(cResult, rResult, 12);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
-        message: 'Faculties removed  succesfully',
-        data: result,
+        message: 'Best course retrieved successfully',
+        data: {
+            course: cResult,
+            // reviews: rResult,
+            averageRating,
+            reviewCount,
+        },
     });
 }));
 exports.CourseControllers = {
     createCourse,
-    getSingleCourse,
-    getAllCourses,
-    updateCourse,
-    deleteCourse,
-    assignFacultiesWithCourse,
-    removeFacultiesFromCourse,
+    getCourseByIdWithReviews,
+    getTheBestCourse,
 };

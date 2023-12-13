@@ -14,6 +14,8 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   //setting default values
   let statusCode = 500;
   let message = 'Something went wrong!';
+  let errorMessage = '';
+  
   let errorSources: TErrorSources = [
     {
       path: '',
@@ -26,20 +28,24 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorSources = simplifiedError?.errorSources;
+    errorMessage = errorSources.map(error => `${error.path} is ${error.message}.`).join(' ')
   } else if (err?.name === 'ValidationError') {
     const simplifiedError = handleValidationError(err);
-    statusCode = simplifiedError?.statusCode;
+    statusCode = simplifiedError?.statusCode; 
     message = simplifiedError?.message;
+    errorMessage =  `${err.errors.courseId.value} is not a valid ID!`
     errorSources = simplifiedError?.errorSources;
   } else if (err?.name === 'CastError') {
     const simplifiedError = handleCastError(err);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
+    errorMessage =  `${err.value} is not a valid ID!`
     errorSources = simplifiedError?.errorSources;
   } else if (err?.code === 11000) {
     const simplifiedError = handleDuplicateError(err);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
+    errorMessage =  `Value is already exist`
     errorSources = simplifiedError?.errorSources;
   } else if (err instanceof AppError) {
     statusCode = err?.statusCode;
@@ -64,10 +70,11 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   return res.status(statusCode).json({
     success: false,
     message,
-    errorSources,
-    err,
-    stack: config.NODE_ENV === 'development' ? err?.stack : null,
+    errorMessage,
+    errorDetails: err,
+    stack: config.node_env === 'development' ? err?.stack : null,
   });
-};
+};  
 
 export default globalErrorHandler;
+  

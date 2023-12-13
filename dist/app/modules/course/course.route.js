@@ -9,11 +9,23 @@ const validateRequest_1 = __importDefault(require("../../middlewares/validateReq
 const course_controller_1 = require("./course.controller");
 const course_validation_1 = require("./course.validation");
 const router = express_1.default.Router();
-router.post('/create-course', (0, validateRequest_1.default)(course_validation_1.CourseValidations.createCourseValidationSchema), course_controller_1.CourseControllers.createCourse);
-router.get('/:id', course_controller_1.CourseControllers.getSingleCourse);
-router.patch('/:id', (0, validateRequest_1.default)(course_validation_1.CourseValidations.updateCourseValidationSchema), course_controller_1.CourseControllers.updateCourse);
-router.delete('/:id', course_controller_1.CourseControllers.deleteCourse);
-router.put('/:courseId/assign-faculties', (0, validateRequest_1.default)(course_validation_1.CourseValidations.facultiesWithCourseValidationSchema), course_controller_1.CourseControllers.assignFacultiesWithCourse);
-router.delete('/:courseId/remove-faculties', (0, validateRequest_1.default)(course_validation_1.CourseValidations.facultiesWithCourseValidationSchema), course_controller_1.CourseControllers.removeFacultiesFromCourse);
-router.get('/', course_controller_1.CourseControllers.getAllCourses);
+router.post('/', (0, validateRequest_1.default)(course_validation_1.CourseValidations.createCourseValidationSchema), course_controller_1.CourseControllers.createCourse);
+router.get('/best', course_controller_1.CourseControllers.getTheBestCourse);
+// router.get('/:id', CourseControllers.getSingleCourse);
+// router.patch(
+//   '/:id',
+//   validateRequest(CourseValidations.updateCourseValidationSchema),
+//   CourseControllers.updateCourse,
+// );
+// router.delete('/:id', CourseControllers.deleteCourse);
+// router.put(
+//   '/:courseId/assign-faculties',
+//   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
+//   CourseControllers.assignFacultiesWithCourse,
+// );
+// router.delete(
+//   '/:courseId/remove-faculties',
+//   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
+//   CourseControllers.removeFacultiesFromCourse,
+// );
 exports.CourseRoutes = router;

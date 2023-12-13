@@ -1,0 +1,9 @@
+
+
+//   const numberOfReviews = rResult.length;
+
+// // Calculate the total rating
+// const totalRating = rResult.reduce((acc, review) => acc + review.rating, 0);
+
+// console.log(`Number of reviews: ${numberOfReviews}`);
+// console.log(`Total rating: ${totalRating}`);
