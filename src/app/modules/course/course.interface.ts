@@ -28,5 +28,5 @@ export type TCourse = {
   provider: string;
   durationInWeeks: number;
   details: TDetails
-  review:[Types.ObjectId]
+  // review:[Types.ObjectId]
 };

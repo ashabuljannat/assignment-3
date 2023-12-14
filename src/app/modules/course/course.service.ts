@@ -10,9 +10,33 @@ const createCourseIntoDB = async (payload: TCourse) => {
   return result;
 };
 
-const getAllCoursesFromDB = async () => {
-  const result = await Course.find();
-  return result;
+const getAllCoursesFromDB = async (reqQuery: Record<string, unknown>) => {
+  const queryResult = await Course.find(reqQuery);
+
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(queryResult.length / itemsPerPage);
+  const allPageData = [];
+
+  function getPageData(pageNumber: number) {
+    const startIndex = (pageNumber - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return queryResult.slice(startIndex, endIndex);
+  }
+  for (let page = 1; page <= totalPages; page++) {
+    const pageData = getPageData(page);
+    allPageData.push(pageData);
+  }
+
+  const meta = {
+    page: totalPages,
+    limit: itemsPerPage,
+    total: queryResult.length,
+  };
+  // console.log(queryResult);
+  // return queryResult;
+  return {meta, allPageData }
+  // const result = await Course.find();
+  // return result;
 };
 
 const getCourseByIdWithReviewsFromDB = async (id: string) => {

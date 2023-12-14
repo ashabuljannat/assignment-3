@@ -28,6 +28,7 @@ const detailsSchema = new mongoose_1.Schema({
         type: String,
     },
 });
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const courseReviewSchema = new mongoose_1.Schema({
     courseId: {
         type: mongoose_1.Schema.Types.ObjectId,
@@ -78,7 +79,7 @@ const courseSchema = new mongoose_1.Schema({
         type: detailsSchema,
         required: true,
     },
-    review: [courseReviewSchema],
+    // review: [courseReviewSchema],
 });
 courseSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {

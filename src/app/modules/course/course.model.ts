@@ -20,6 +20,7 @@ const detailsSchema = new Schema<TDetails>({
   },
 });
 
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const courseReviewSchema = new Schema<TReview>({
   courseId: {
     type: Schema.Types.ObjectId,
@@ -71,7 +72,7 @@ const courseSchema = new Schema<TCourse>({
     type: detailsSchema,
     required: true,
   },
-  review: [courseReviewSchema],
+  // review: [courseReviewSchema],
 });
 
 courseSchema.pre('save', async function (next) {
