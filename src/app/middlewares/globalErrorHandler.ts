@@ -23,7 +23,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
       path: '',
       message: 'Something went wrong',
     },
-  ]; 
+  ];
 
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
@@ -46,13 +46,11 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     errorMessage = `${err.value} is not a valid ID!`;
     errorSources = simplifiedError?.errorSources;
   } else if (err?.code === 11000) {
-
     const simplifiedError = handleDuplicateError(err);
     statusCode = simplifiedError?.statusCode;
     message = simplifiedError?.message;
     errorMessage = `You Enter duplicated value`;
     errorSources = simplifiedError?.errorSources;
-
   } else if (err instanceof AppError) {
     statusCode = err?.statusCode;
     message = err.message;

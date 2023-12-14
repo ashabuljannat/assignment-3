@@ -10,11 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseServices = void 0;
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const review_model_1 = require("../review/review.model");
 const course_model_1 = require("./course.model");
 const createCourseIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield course_model_1.Course.create(payload);
+    return result;
+});
+const getAllCoursesFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield course_model_1.Course.find();
     return result;
 });
 const getCourseByIdWithReviewsFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,8 +57,88 @@ const getTheBestCourseFromDB = () => __awaiter(void 0, void 0, void 0, function*
     const cResult = yield course_model_1.Course.findById(courseIdWithMaxAverage);
     return { cResult, rResult, averageRating, reviewCount };
 });
+const updateCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // const { preRequisiteCourses, ...courseRemainingData } = payload;
+    // try {
+    //   //step1: basic course info update
+    //   const updatedBasicCourseInfo = await Course.findByIdAndUpdate(
+    //     id,
+    //     courseRemainingData,
+    //     { new: true, runValidators: true },
+    //   );
+    //   if (!updatedBasicCourseInfo) {
+    //     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
+    //   }
+    //   // check if there is any pre requisite courses to update
+    //   if (preRequisiteCourses && preRequisiteCourses.length > 0) {
+    //     // filter out the deleted fields
+    //     const deletedPreRequisites = preRequisiteCourses
+    //       .filter(
+    //         (el: { course: any; isDeleted: any }) => el.course && el.isDeleted,
+    //       )
+    //       .map((el: { course: any }) => el.course);
+    //     const deletedPreRequisiteCourses = await Course.findByIdAndUpdate(
+    //       id,
+    //       {
+    //         $pull: {
+    //           preRequisiteCourses: { course: { $in: deletedPreRequisites } },
+    //         },
+    //       },
+    //       {
+    //         new: true,
+    //         runValidators: true,
+    //       },
+    //     );
+    //     if (!deletedPreRequisiteCourses) {
+    //       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
+    //     }
+    //     // filter out the new course fields
+    //     const newPreRequisites = preRequisiteCourses?.filter(
+    //       (el: { course: any; isDeleted: any }) => el.course && !el.isDeleted,
+    //     );
+    //     const newPreRequisiteCourses = await Course.findByIdAndUpdate(
+    //       id,
+    //       {
+    //         $addToSet: { preRequisiteCourses: { $each: newPreRequisites } },
+    //       },
+    //       { new: true, runValidators: true },
+    //     );
+    //     if (!newPreRequisiteCourses) {
+    //       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
+    //     }
+    //     const result = await Course.findById(id).populate(
+    //       'preRequisiteCourses.course',
+    //     );
+    //     return result;
+    //   }
+    // } catch (err) {
+    //   throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
+    // }
+});
+// const updateAcademicDepartmentIntoDB = async (
+//   id: string,
+//   payload: Partial<TAcademicDepartment>,
+// ) => {
+//   const result = await AcademicDepartment.findOneAndUpdate(
+//     { _id: id },
+//     payload,
+//     {
+//       new: true,
+//     },
+//   );
+//   return result;
+// };
+const deleteCourseFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield course_model_1.Course.findByIdAndUpdate(id, { price: 99999, endDate: '2023-06-30' }, {
+        new: true,
+    });
+    return result;
+});
 exports.CourseServices = {
     createCourseIntoDB,
+    getAllCoursesFromDB,
     getCourseByIdWithReviewsFromDB,
     getTheBestCourseFromDB,
+    updateCourseIntoDB,
+    deleteCourseFromDB,
 };

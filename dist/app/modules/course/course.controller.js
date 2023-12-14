@@ -26,6 +26,34 @@ const createCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
+const getAllCourses = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield course_service_1.CourseServices.getAllCoursesFromDB();
+    const itemsPerPage = 10;
+    const totalPages = Math.ceil(result.length / itemsPerPage);
+    const allPageData = [];
+    function getPageData(pageNumber) {
+        const startIndex = (pageNumber - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        return result.slice(startIndex, endIndex);
+    }
+    for (let page = 1; page <= totalPages; page++) {
+        const pageData = getPageData(page);
+        allPageData.push(pageData);
+    }
+    // console.log(allPageData)
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Course all are retrieved successfully',
+        meta: {
+            page: totalPages,
+            limit: itemsPerPage,
+            // total: result.length,
+            total: allPageData[0].length,
+        },
+        data: allPageData[0],
+    });
+}));
 const getCourseByIdWithReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { courseId } = req.params;
     const { result, result2 } = yield course_service_1.CourseServices.getCourseByIdWithReviewsFromDB(courseId);
@@ -54,8 +82,31 @@ const getTheBestCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 
         },
     });
 }));
+const updateCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { courseId } = req.params;
+    const result = yield course_service_1.CourseServices.updateCourseIntoDB(courseId, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Course updated successfully',
+        data: result,
+    });
+}));
+const deleteCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { courseId } = req.params;
+    const result = yield course_service_1.CourseServices.deleteCourseFromDB(courseId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Course update delete field successfully ',
+        data: result,
+    });
+}));
 exports.CourseControllers = {
     createCourse,
     getCourseByIdWithReviews,
+    getAllCourses,
     getTheBestCourse,
+    updateCourse,
+    deleteCourse,
 };

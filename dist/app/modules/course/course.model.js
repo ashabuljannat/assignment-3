@@ -28,6 +28,15 @@ const detailsSchema = new mongoose_1.Schema({
         type: String,
     },
 });
+const courseReviewSchema = new mongoose_1.Schema({
+    courseId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Course',
+        unique: true,
+    },
+    rating: { type: Number, required: true },
+    review: { type: String, required: true },
+});
 const courseSchema = new mongoose_1.Schema({
     title: {
         type: String,
@@ -69,10 +78,7 @@ const courseSchema = new mongoose_1.Schema({
         type: detailsSchema,
         required: true,
     },
-    review: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Review'
-    },
+    review: [courseReviewSchema],
 });
 courseSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {

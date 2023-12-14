@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { TCourse, TDetails, TTags } from './course.interface';
+import { TCourse, TDetails, TReview, TTags } from './course.interface';
 
 const tagsSchema = new Schema<TTags>({
   name: {
@@ -18,6 +18,16 @@ const detailsSchema = new Schema<TDetails>({
   description: {
     type: String,
   },
+});
+
+const courseReviewSchema = new Schema<TReview>({
+  courseId: {
+    type: Schema.Types.ObjectId,
+    ref: 'Course',
+    unique: true,
+  },
+  rating: { type: Number, required: true },
+  review: { type: String, required: true },
 });
 
 const courseSchema = new Schema<TCourse>({
@@ -52,7 +62,7 @@ const courseSchema = new Schema<TCourse>({
     type: String,
     required: true,
   },
-  provider: { 
+  provider: {
     type: String,
     required: true,
   },
@@ -61,10 +71,7 @@ const courseSchema = new Schema<TCourse>({
     type: detailsSchema,
     required: true,
   },
-  review: {
-    type: Schema.Types.ObjectId,
-    ref: 'Review'
-  },
+  review: [courseReviewSchema],
 });
 
 courseSchema.pre('save', async function (next) {

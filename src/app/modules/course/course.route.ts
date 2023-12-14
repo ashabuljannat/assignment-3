@@ -12,7 +12,6 @@ router.post(
 );
 
 router.get('/best', CourseControllers.getTheBestCourse);
-// router.get('/:id', CourseControllers.getSingleCourse);
 
 // router.patch(
 //   '/:id',
@@ -20,7 +19,7 @@ router.get('/best', CourseControllers.getTheBestCourse);
 //   CourseControllers.updateCourse,
 // );
 
-// router.delete('/:id', CourseControllers.deleteCourse);
+router.delete('/:courseId', CourseControllers.deleteCourse);
 
 // router.put(
 //   '/:courseId/assign-faculties',
