@@ -1,5 +1,11 @@
 import { Types } from 'mongoose';
 
+export type TMeta = {
+  page: number;
+  limit: number;
+  total: number;
+};
+
 export type TTags = {
   name: string;
   isDeleted: boolean;

@@ -27,33 +27,16 @@ const createCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getAllCourses = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { meta, allPageData } = yield course_service_1.CourseServices.getAllCoursesFromDB(req.query);
-    // const itemsPerPage = 10;
-    // const totalPages = Math.ceil(result.length / itemsPerPage);
-    // const allPageData = [];
-    // function getPageData(pageNumber:number) {
-    //   const startIndex = (pageNumber - 1) * itemsPerPage;
-    //   const endIndex = startIndex + itemsPerPage;
-    //   return result.slice(startIndex, endIndex);
-    // }
-    // for (let page = 1; page <= totalPages; page++) {
-    //   const pageData = getPageData(page);
-    //   allPageData.push(pageData);
-    // }
+    const { meta, result } = yield course_service_1.CourseServices.getAllCoursesFromDB(req.query);
     // console.log(allPageData)
+    // console.log(result);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Course all are retrieved successfully',
         meta,
-        // {
-        //   page: totalPages,
-        //   limit: itemsPerPage,
-        //   total: result.length,
-        //   // total: allPageData[0].length,
-        // },
-        data: allPageData[0],
-        // data: result,
+        // data: allPageData[page],
+        data: result,
     });
 }));
 const getCourseByIdWithReviews = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

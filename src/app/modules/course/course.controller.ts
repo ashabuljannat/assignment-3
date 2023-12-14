@@ -15,35 +15,17 @@ const createCourse = catchAsync(async (req, res) => {
 });
 
 const getAllCourses = catchAsync(async (req, res) => {
-  const  {meta, allPageData } = await CourseServices.getAllCoursesFromDB(req.query);
+  const { meta, result } = await CourseServices.getAllCoursesFromDB(req.query);
 
-  // const itemsPerPage = 10;
-  // const totalPages = Math.ceil(result.length / itemsPerPage);
-  // const allPageData = [];
-
-  // function getPageData(pageNumber:number) {
-  //   const startIndex = (pageNumber - 1) * itemsPerPage;
-  //   const endIndex = startIndex + itemsPerPage;
-  //   return result.slice(startIndex, endIndex);
-  // }
-  // for (let page = 1; page <= totalPages; page++) {
-  //   const pageData = getPageData(page);
-  //   allPageData.push(pageData);
-  // }
   // console.log(allPageData)
+  // console.log(result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Course all are retrieved successfully',
-    meta, 
-    // {
-    //   page: totalPages,
-    //   limit: itemsPerPage,
-    //   total: result.length,
-    //   // total: allPageData[0].length,
-    // },
-    data: allPageData[0],
-    // data: result,
+    meta,
+    // data: allPageData[page],
+    data: result,
   });
 });
 

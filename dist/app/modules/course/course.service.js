@@ -8,8 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseServices = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// import httpStatus from 'http-status';
+// import AppError from '../../errors/AppError';
 const review_model_1 = require("../review/review.model");
 const course_model_1 = require("./course.model");
 const createCourseIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -17,13 +31,19 @@ const createCourseIntoDB = (payload) => __awaiter(void 0, void 0, void 0, functi
     return result;
 });
 const getAllCoursesFromDB = (reqQuery) => __awaiter(void 0, void 0, void 0, function* () {
-    const queryResult = yield course_model_1.Course.find(reqQuery);
-    const itemsPerPage = 10;
-    const totalPages = Math.ceil(queryResult.length / itemsPerPage);
+    const { page, limit } = reqQuery, reqMainQuery = __rest(reqQuery, ["page", "limit"]);
+    // console.log(page, limit);
+    const queryPage = page || 1;
+    const queryLimit = limit || 10;
+    // console.log(queryPage, queryLimit);
+    // console.log(reqQuery);
+    // console.log(outputObject);
+    const queryResult = yield course_model_1.Course.find(reqMainQuery);
+    const totalPages = Math.ceil(queryResult.length / queryLimit);
     const allPageData = [];
     function getPageData(pageNumber) {
-        const startIndex = (pageNumber - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
+        const startIndex = (pageNumber - 1) * queryLimit;
+        const endIndex = startIndex + queryLimit;
         return queryResult.slice(startIndex, endIndex);
     }
     for (let page = 1; page <= totalPages; page++) {
@@ -32,12 +52,15 @@ const getAllCoursesFromDB = (reqQuery) => __awaiter(void 0, void 0, void 0, func
     }
     const meta = {
         page: totalPages,
-        limit: itemsPerPage,
+        limit: +queryLimit,
         total: queryResult.length,
     };
+    // console.log(meta);
     // console.log(queryResult);
     // return queryResult;
-    return { meta, allPageData };
+    const result = allPageData[queryPage - 1];
+    // console.log(page)
+    return { meta, result };
     // const result = await Course.find();
     // return result;
 });
@@ -78,6 +101,7 @@ const getTheBestCourseFromDB = () => __awaiter(void 0, void 0, void 0, function*
     const cResult = yield course_model_1.Course.findById(courseIdWithMaxAverage);
     return { cResult, rResult, averageRating, reviewCount };
 });
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const updateCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     // const { preRequisiteCourses, ...courseRemainingData } = payload;
     // try {

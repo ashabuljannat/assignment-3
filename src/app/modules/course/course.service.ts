@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import httpStatus from 'http-status';
-import AppError from '../../errors/AppError';
+// import httpStatus from 'http-status';
+// import AppError from '../../errors/AppError';
 import { Review } from '../review/review.model';
-import { TCourse } from './course.interface';
+import { TCourse, TMeta } from './course.interface';
 import { Course } from './course.model';
 
 const createCourseIntoDB = async (payload: TCourse) => {
@@ -10,16 +10,23 @@ const createCourseIntoDB = async (payload: TCourse) => {
   return result;
 };
 
-const getAllCoursesFromDB = async (reqQuery: Record<string, unknown>) => {
-  const queryResult = await Course.find(reqQuery);
+const getAllCoursesFromDB = async (reqQuery: any) => {
+  const { page, limit, ...reqMainQuery } = reqQuery;
+  // console.log(page, limit);
+  const queryPage = page || 1;
+  const queryLimit = limit || 10;
+  // console.log(queryPage, queryLimit);
+  // console.log(reqQuery);
+  // console.log(outputObject);
 
-  const itemsPerPage = 10;
-  const totalPages = Math.ceil(queryResult.length / itemsPerPage);
+  const queryResult = await Course.find(reqMainQuery);
+
+  const totalPages = Math.ceil(queryResult.length / queryLimit);
   const allPageData = [];
 
   function getPageData(pageNumber: number) {
-    const startIndex = (pageNumber - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+    const startIndex = (pageNumber - 1) * queryLimit;
+    const endIndex = startIndex + queryLimit;
     return queryResult.slice(startIndex, endIndex);
   }
   for (let page = 1; page <= totalPages; page++) {
@@ -27,14 +34,17 @@ const getAllCoursesFromDB = async (reqQuery: Record<string, unknown>) => {
     allPageData.push(pageData);
   }
 
-  const meta = {
+  const meta: TMeta = {
     page: totalPages,
-    limit: itemsPerPage,
+    limit: +queryLimit,
     total: queryResult.length,
   };
+  // console.log(meta);
   // console.log(queryResult);
   // return queryResult;
-  return {meta, allPageData }
+  const result = allPageData[queryPage - 1];
+  // console.log(page)
+  return { meta, result };
   // const result = await Course.find();
   // return result;
 };
@@ -79,9 +89,9 @@ const getTheBestCourseFromDB = async () => {
   return { cResult, rResult, averageRating, reviewCount };
 };
 
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   // const { preRequisiteCourses, ...courseRemainingData } = payload;
-
   // try {
   //   //step1: basic course info update
   //   const updatedBasicCourseInfo = await Course.findByIdAndUpdate(
@@ -89,11 +99,9 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   //     courseRemainingData,
   //     { new: true, runValidators: true },
   //   );
-
   //   if (!updatedBasicCourseInfo) {
   //     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
   //   }
-
   //   // check if there is any pre requisite courses to update
   //   if (preRequisiteCourses && preRequisiteCourses.length > 0) {
   //     // filter out the deleted fields
@@ -102,7 +110,6 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   //         (el: { course: any; isDeleted: any }) => el.course && el.isDeleted,
   //       )
   //       .map((el: { course: any }) => el.course);
-
   //     const deletedPreRequisiteCourses = await Course.findByIdAndUpdate(
   //       id,
   //       {
@@ -115,16 +122,13 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   //         runValidators: true,
   //       },
   //     );
-
   //     if (!deletedPreRequisiteCourses) {
   //       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
   //     }
-
   //     // filter out the new course fields
   //     const newPreRequisites = preRequisiteCourses?.filter(
   //       (el: { course: any; isDeleted: any }) => el.course && !el.isDeleted,
   //     );
-
   //     const newPreRequisiteCourses = await Course.findByIdAndUpdate(
   //       id,
   //       {
@@ -132,15 +136,12 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   //       },
   //       { new: true, runValidators: true },
   //     );
-
   //     if (!newPreRequisiteCourses) {
   //       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
   //     }
-
   //     const result = await Course.findById(id).populate(
   //       'preRequisiteCourses.course',
   //     );
-
   //     return result;
   //   }
   // } catch (err) {
