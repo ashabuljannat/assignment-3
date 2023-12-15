@@ -8,37 +8,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseServices = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import httpStatus from 'http-status';
 // import AppError from '../../errors/AppError';
 const review_model_1 = require("../review/review.model");
+const course_constant_1 = require("./course.constant");
 const course_model_1 = require("./course.model");
 const createCourseIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield course_model_1.Course.create(payload);
     return result;
 });
 const getAllCoursesFromDB = (reqQuery) => __awaiter(void 0, void 0, void 0, function* () {
-    const { page, limit } = reqQuery, reqMainQuery = __rest(reqQuery, ["page", "limit"]);
+    // const { page, limit, ...reqMainQuery } = reqQuery;
+    const queryObj = Object.assign({}, reqQuery);
+    course_constant_1.courseExcludeFilteringFields.forEach((el) => delete queryObj[el]);
     // console.log(page, limit);
-    const queryPage = page || 1;
-    const queryLimit = limit || 10;
+    const queryPage = Number(reqQuery.page) || 1;
+    const queryLimit = Number(reqQuery.limit) || 10;
+    // const queryPage = page || 1;
+    // const queryLimit = limit || 10;
     // console.log(queryPage, queryLimit);
     // console.log(reqQuery);
     // console.log(outputObject);
-    const queryResult = yield course_model_1.Course.find(reqMainQuery);
+    // const queryResult = await Course.find(reqMainQuery);
+    const queryResult = yield course_model_1.Course.find(queryObj);
     const totalPages = Math.ceil(queryResult.length / queryLimit);
     const allPageData = [];
     function getPageData(pageNumber) {

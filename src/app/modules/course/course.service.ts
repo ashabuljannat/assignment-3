@@ -2,6 +2,7 @@
 // import httpStatus from 'http-status';
 // import AppError from '../../errors/AppError';
 import { Review } from '../review/review.model';
+import { courseExcludeFilteringFields } from './course.constant';
 import { TCourse, TMeta } from './course.interface';
 import { Course } from './course.model';
 
@@ -11,15 +12,22 @@ const createCourseIntoDB = async (payload: TCourse) => {
 };
 
 const getAllCoursesFromDB = async (reqQuery: any) => {
-  const { page, limit, ...reqMainQuery } = reqQuery;
+  // const { page, limit, ...reqMainQuery } = reqQuery;
+  const queryObj = { ...reqQuery };
+
+  courseExcludeFilteringFields.forEach((el) => delete queryObj[el]);
+
   // console.log(page, limit);
-  const queryPage = page || 1;
-  const queryLimit = limit || 10;
+  const queryPage = Number(reqQuery.page) || 1;
+  const queryLimit = Number(reqQuery.limit) || 10;
+  // const queryPage = page || 1;
+  // const queryLimit = limit || 10;
   // console.log(queryPage, queryLimit);
   // console.log(reqQuery);
   // console.log(outputObject);
 
-  const queryResult = await Course.find(reqMainQuery);
+  // const queryResult = await Course.find(reqMainQuery);
+  const queryResult = await Course.find(queryObj);
 
   const totalPages = Math.ceil(queryResult.length / queryLimit);
   const allPageData = [];
