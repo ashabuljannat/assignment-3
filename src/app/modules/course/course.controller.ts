@@ -17,14 +17,11 @@ const createCourse = catchAsync(async (req, res) => {
 const getAllCourses = catchAsync(async (req, res) => {
   const { meta, result } = await CourseServices.getAllCoursesFromDB(req.query);
 
-  // console.log(allPageData)
-  // console.log(result);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Course all are retrieved successfully',
     meta,
-    // data: allPageData[page],
     data: result,
   });
 });
@@ -75,17 +72,6 @@ const updateCourse = catchAsync(async (req, res) => {
   });
 });
 
-const deleteCourse = catchAsync(async (req, res) => {
-  const { courseId } = req.params;
-  const result = await CourseServices.deleteCourseFromDB(courseId);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Course update delete field successfully ',
-    data: result,
-  });
-});
 
 export const CourseControllers = {
   createCourse,
@@ -93,5 +79,5 @@ export const CourseControllers = {
   getAllCourses,
   getTheBestCourse,
   updateCourse,
-  deleteCourse,
+  // deleteCourse,
 };

@@ -28,14 +28,11 @@ const createCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
 }));
 const getAllCourses = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { meta, result } = yield course_service_1.CourseServices.getAllCoursesFromDB(req.query);
-    // console.log(allPageData)
-    // console.log(result);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: 'Course all are retrieved successfully',
         meta,
-        // data: allPageData[page],
         data: result,
     });
 }));
@@ -77,21 +74,11 @@ const updateCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
         data: result,
     });
 }));
-const deleteCourse = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { courseId } = req.params;
-    const result = yield course_service_1.CourseServices.deleteCourseFromDB(courseId);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'Course update delete field successfully ',
-        data: result,
-    });
-}));
 exports.CourseControllers = {
     createCourse,
     getCourseByIdWithReviews,
     getAllCourses,
     getTheBestCourse,
     updateCourse,
-    deleteCourse,
+    // deleteCourse,
 };

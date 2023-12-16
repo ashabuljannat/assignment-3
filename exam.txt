@@ -43,4 +43,61 @@
   // });
       // const queryResult = await Course.find(detailsLevelFilter);
          // console.log(queryTags);
+         
+  // console.log(allPageData)
+  // console.log(result);     // data: allPageData[page],
+
+  
+
+// router.patch(
+//   '/:id',
+//   validateRequest(CourseValidations.updateCourseValidationSchema),
+//   CourseControllers.updateCourse,
+// );
+
+
+// router.put(
+//   '/:courseId/assign-faculties',
+//   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
+//   CourseControllers.assignFacultiesWithCourse,
+// );
+
+// router.delete(
+//   '/:courseId/remove-faculties',
+//   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
+//   CourseControllers.removeFacultiesFromCourse,
+// );
+
+
+// const deleteCourseFromDB = async (id: string) => {
+//   const result = await Course.findByIdAndUpdate(
+//     id,
+//     { price: 99999, endDate: '2023-06-30' },
+//     {
+//       new: true,
+//     },
+//   );
+//   return result;
+// };
+
+
+// const deleteCourse = catchAsync(async (req, res) => {
+//   const { courseId } = req.params;
+//   const result = await CourseServices.deleteCourseFromDB(courseId);
+
+//   sendResponse(res, {
+//     statusCode: httpStatus.OK,
+//     success: true,
+//     message: 'Course update delete field successfully ',
+//     data: result,
+//   });
+// });
+
+router.patch(
+  '/:courseId',
+  validateRequest(CourseValidations.updateCourseValidationSchema),
+  CourseControllers.updateCourse,
+);
+  
+
   

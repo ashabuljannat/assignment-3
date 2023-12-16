@@ -3,7 +3,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { CourseControllers } from './course.controller';
 import { CourseValidations } from './course.validation';
 
-const router = express.Router();
+const router = express.Router(); 
 
 router.post(
   '/',
@@ -13,24 +13,6 @@ router.post(
 
 router.get('/best', CourseControllers.getTheBestCourse);
 
-// router.patch(
-//   '/:id',
-//   validateRequest(CourseValidations.updateCourseValidationSchema),
-//   CourseControllers.updateCourse,
-// );
-
-router.delete('/:courseId', CourseControllers.deleteCourse);
-
-// router.put(
-//   '/:courseId/assign-faculties',
-//   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
-//   CourseControllers.assignFacultiesWithCourse,
-// );
-
-// router.delete(
-//   '/:courseId/remove-faculties',
-//   validateRequest(CourseValidations.facultiesWithCourseValidationSchema),
-//   CourseControllers.removeFacultiesFromCourse,
-// );
+// router.delete('/:courseId', CourseControllers.deleteCourse);
 
 export const CourseRoutes = router;

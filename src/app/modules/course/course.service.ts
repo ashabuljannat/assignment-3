@@ -2,6 +2,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
 import { Review } from '../review/review.model';
 import { courseExcludeFilteringFields } from './course.constant';
 import { TCourse, TMeta } from './course.interface';
@@ -124,7 +126,31 @@ const getTheBestCourseFromDB = async () => {
 };
 
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
+  // console.log(id, payload);
+  const queryDataResult = await Course.findById(id);
+
+  function createUpdateObject(original: any, update: any) {
+    const updatedObject = { ...original };
+
+    for (const key in update) {
+      if (typeof update[key] === 'object' && !Array.isArray(update[key])) {
+        updatedObject[key] = createUpdateObject(original[key], update[key]);
+      } else {
+        updatedObject[key] = update[key];
+      }
+    }
+    return updatedObject;
+  }
+
+  const thirdData = createUpdateObject(queryDataResult, payload);
+  // console.log(thirdData._doc);
+
+  const updatedBasicCourseInfo = await Course.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
   // const { preRequisiteCourses, ...courseRemainingData } = payload;
+  // const { tags, ...courseRemainingData } = payload;
   // try {
   //   //step1: basic course info update
   //   const updatedBasicCourseInfo = await Course.findByIdAndUpdate(
@@ -135,14 +161,13 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   //   if (!updatedBasicCourseInfo) {
   //     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
   //   }
+
   //   // check if there is any pre requisite courses to update
-  //   if (preRequisiteCourses && preRequisiteCourses.length > 0) {
+  //   if (tags && tags.length > 0) {
   //     // filter out the deleted fields
-  //     const deletedPreRequisites = preRequisiteCourses
-  //       .filter(
-  //         (el: { course: any; isDeleted: any }) => el.course && el.isDeleted,
-  //       )
-  //       .map((el: { course: any }) => el.course);
+  //     const deletedPreRequisites = tags
+  //       .filter((el: { name: any; isDeleted: any }) => el.name && el.isDeleted)
+  //       .map((el: { name: any }) => el.name);
   //     const deletedPreRequisiteCourses = await Course.findByIdAndUpdate(
   //       id,
   //       {
@@ -159,8 +184,8 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   //       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
   //     }
   //     // filter out the new course fields
-  //     const newPreRequisites = preRequisiteCourses?.filter(
-  //       (el: { course: any; isDeleted: any }) => el.course && !el.isDeleted,
+  //     const newPreRequisites = tags?.filter(
+  //       (el: { name: any; isDeleted: any }) => el.name && !el.isDeleted,
   //     );
   //     const newPreRequisiteCourses = await Course.findByIdAndUpdate(
   //       id,
@@ -178,33 +203,9 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   //     return result;
   //   }
   // } catch (err) {
-  //   throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
+  //   throw new AppError(httpStatus.BAD_REQUEST, 'catch Failed to update course');
   // }
-};
-
-// const updateAcademicDepartmentIntoDB = async (
-//   id: string,
-//   payload: Partial<TAcademicDepartment>,
-// ) => {
-//   const result = await AcademicDepartment.findOneAndUpdate(
-//     { _id: id },
-//     payload,
-//     {
-//       new: true,
-//     },
-//   );
-//   return result;
-// };
-
-const deleteCourseFromDB = async (id: string) => {
-  const result = await Course.findByIdAndUpdate(
-    id,
-    { price: 99999, endDate: '2023-06-30' },
-    {
-      new: true,
-    },
-  );
-  return result;
+  return updatedBasicCourseInfo;
 };
 
 export const CourseServices = {
@@ -213,5 +214,5 @@ export const CourseServices = {
   getCourseByIdWithReviewsFromDB,
   getTheBestCourseFromDB,
   updateCourseIntoDB,
-  deleteCourseFromDB,
+  // deleteCourseFromDB,
 };

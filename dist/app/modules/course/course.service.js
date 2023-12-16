@@ -111,7 +111,28 @@ const getTheBestCourseFromDB = () => __awaiter(void 0, void 0, void 0, function*
     return { cResult, rResult, averageRating, reviewCount };
 });
 const updateCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(id, payload);
+    const queryDataResult = yield course_model_1.Course.findById(id);
+    function createUpdateObject(original, update) {
+        const updatedObject = Object.assign({}, original);
+        for (const key in update) {
+            if (typeof update[key] === 'object' && !Array.isArray(update[key])) {
+                updatedObject[key] = createUpdateObject(original[key], update[key]);
+            }
+            else {
+                updatedObject[key] = update[key];
+            }
+        }
+        return updatedObject;
+    }
+    const thirdData = createUpdateObject(queryDataResult, payload);
+    // console.log(thirdData._doc);
+    const updatedBasicCourseInfo = yield course_model_1.Course.findByIdAndUpdate(id, payload, {
+        new: true,
+        runValidators: true,
+    });
     // const { preRequisiteCourses, ...courseRemainingData } = payload;
+    // const { tags, ...courseRemainingData } = payload;
     // try {
     //   //step1: basic course info update
     //   const updatedBasicCourseInfo = await Course.findByIdAndUpdate(
@@ -123,13 +144,11 @@ const updateCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, fu
     //     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
     //   }
     //   // check if there is any pre requisite courses to update
-    //   if (preRequisiteCourses && preRequisiteCourses.length > 0) {
+    //   if (tags && tags.length > 0) {
     //     // filter out the deleted fields
-    //     const deletedPreRequisites = preRequisiteCourses
-    //       .filter(
-    //         (el: { course: any; isDeleted: any }) => el.course && el.isDeleted,
-    //       )
-    //       .map((el: { course: any }) => el.course);
+    //     const deletedPreRequisites = tags
+    //       .filter((el: { name: any; isDeleted: any }) => el.name && el.isDeleted)
+    //       .map((el: { name: any }) => el.name);
     //     const deletedPreRequisiteCourses = await Course.findByIdAndUpdate(
     //       id,
     //       {
@@ -146,8 +165,8 @@ const updateCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, fu
     //       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
     //     }
     //     // filter out the new course fields
-    //     const newPreRequisites = preRequisiteCourses?.filter(
-    //       (el: { course: any; isDeleted: any }) => el.course && !el.isDeleted,
+    //     const newPreRequisites = tags?.filter(
+    //       (el: { name: any; isDeleted: any }) => el.name && !el.isDeleted,
     //     );
     //     const newPreRequisiteCourses = await Course.findByIdAndUpdate(
     //       id,
@@ -165,27 +184,9 @@ const updateCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, fu
     //     return result;
     //   }
     // } catch (err) {
-    //   throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
+    //   throw new AppError(httpStatus.BAD_REQUEST, 'catch Failed to update course');
     // }
-});
-// const updateAcademicDepartmentIntoDB = async (
-//   id: string,
-//   payload: Partial<TAcademicDepartment>,
-// ) => {
-//   const result = await AcademicDepartment.findOneAndUpdate(
-//     { _id: id },
-//     payload,
-//     {
-//       new: true,
-//     },
-//   );
-//   return result;
-// };
-const deleteCourseFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield course_model_1.Course.findByIdAndUpdate(id, { price: 99999, endDate: '2023-06-30' }, {
-        new: true,
-    });
-    return result;
+    return updatedBasicCourseInfo;
 });
 exports.CourseServices = {
     createCourseIntoDB,
@@ -193,5 +194,5 @@ exports.CourseServices = {
     getCourseByIdWithReviewsFromDB,
     getTheBestCourseFromDB,
     updateCourseIntoDB,
-    deleteCourseFromDB,
+    // deleteCourseFromDB,
 };
