@@ -7,3 +7,33 @@
 
 // console.log(`Number of reviews: ${numberOfReviews}`);
 // console.log(`Total rating: ${totalRating}`);
+
+  // const result = await Course.find();
+  // return result;
+// console.log(meta);
+  // console.log(queryResult);
+  // return queryResult;
+    console.log(reqQuery);
+  console.log(queryObj);
+  // console.log(queryPage, queryLimit);
+  // console.log(reqQuery);
+  // console.log(outputObject);
+  //   // console.log(page)
+  // const queryResult = await Course.find(reqMainQuery);
+    // const queryMinPrice = Number(reqQuery.minPrice);
+      // const queryMaxPrice = Number(reqQuery.maxPrice);
+    // find({ price: {$gte:9}, price: {$lte:90}}) { $and: [ { price: { $ne: 1.99 } }, { price: { $exists: true } } ] }
+
+       const { tags, sortBy, sortOrder } = req.query;
+
+        // Create a filter based on the provided tags parameter
+        const filter = tags ? { 'tags': { $elemMatch: { 'name': tags } } } : {};
+
+        // Create a sort object based on the provided sortBy and sortOrder parameters
+        const sort = {};
+        if (sortBy) {
+            sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+        }
+
+        // Find documents in the collection that match the filter and apply sorting
+        const courses = await Course.find(filter).sort(sort);

@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseServices = void 0;
+const query_1 = require("./query");
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import httpStatus from 'http-status';
 // import AppError from '../../errors/AppError';
@@ -21,43 +22,58 @@ const createCourseIntoDB = (payload) => __awaiter(void 0, void 0, void 0, functi
     return result;
 });
 const getAllCoursesFromDB = (reqQuery) => __awaiter(void 0, void 0, void 0, function* () {
-    // const { page, limit, ...reqMainQuery } = reqQuery;
     const queryObj = Object.assign({}, reqQuery);
     course_constant_1.courseExcludeFilteringFields.forEach((el) => delete queryObj[el]);
-    // console.log(page, limit);
     const queryPage = Number(reqQuery.page) || 1;
     const queryLimit = Number(reqQuery.limit) || 10;
-    // const queryPage = page || 1;
-    // const queryLimit = limit || 10;
-    // console.log(queryPage, queryLimit);
-    // console.log(reqQuery);
-    // console.log(outputObject);
-    // const queryResult = await Course.find(reqMainQuery);
+    const { maxPrice: queryMaxPrice, minPrice: queryMinPrice } = reqQuery;
+    const queryTags = reqQuery.tags;
+    const queryLevel = reqQuery.level;
+    const { sortBy, sortOrder } = reqQuery;
+    if (queryMaxPrice || queryMinPrice) {
+        const sort = {};
+        if (sortBy) {
+            sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+        }
+        const queryResult = yield course_model_1.Course.find({
+            $and: [
+                { price: { $gte: queryMinPrice } },
+                { price: { $lte: queryMaxPrice } },
+            ],
+        }).sort(sort);
+        const { allPageData, totalPages } = (0, query_1.pagination)(queryResult, queryLimit);
+        const meta = {
+            page: totalPages,
+            limit: queryLimit,
+            total: queryResult.length,
+        };
+        const result = allPageData[queryPage - 1];
+        return { meta, result };
+    }
+    if (queryTags || queryLevel) {
+        const tagFilter = { tags: { $elemMatch: { name: queryTags } } };
+        const detailsLevelFilter = { 'details.level': queryLevel };
+        // console.log(queryTags);
+        const queryResult = yield course_model_1.Course.find(queryTags ? tagFilter : detailsLevelFilter);
+        // const queryResult = await Course.find(detailsLevelFilter);
+        const { allPageData, totalPages } = (0, query_1.pagination)(queryResult, queryLimit);
+        const meta = {
+            page: totalPages,
+            limit: queryLimit,
+            total: queryResult.length,
+        };
+        const result = allPageData[queryPage - 1];
+        return { meta, result };
+    }
     const queryResult = yield course_model_1.Course.find(queryObj);
-    const totalPages = Math.ceil(queryResult.length / queryLimit);
-    const allPageData = [];
-    function getPageData(pageNumber) {
-        const startIndex = (pageNumber - 1) * queryLimit;
-        const endIndex = startIndex + queryLimit;
-        return queryResult.slice(startIndex, endIndex);
-    }
-    for (let page = 1; page <= totalPages; page++) {
-        const pageData = getPageData(page);
-        allPageData.push(pageData);
-    }
+    const { allPageData, totalPages } = (0, query_1.pagination)(queryResult, queryLimit);
     const meta = {
         page: totalPages,
-        limit: +queryLimit,
+        limit: queryLimit,
         total: queryResult.length,
     };
-    // console.log(meta);
-    // console.log(queryResult);
-    // return queryResult;
     const result = allPageData[queryPage - 1];
-    // console.log(page)
     return { meta, result };
-    // const result = await Course.find();
-    // return result;
 });
 const getCourseByIdWithReviewsFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield course_model_1.Course.findById(id);

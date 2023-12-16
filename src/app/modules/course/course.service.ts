@@ -1,3 +1,4 @@
+import { pagination } from './query';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import httpStatus from 'http-status';
 // import AppError from '../../errors/AppError';
@@ -12,49 +13,71 @@ const createCourseIntoDB = async (payload: TCourse) => {
 };
 
 const getAllCoursesFromDB = async (reqQuery: any) => {
-  // const { page, limit, ...reqMainQuery } = reqQuery;
   const queryObj = { ...reqQuery };
-
   courseExcludeFilteringFields.forEach((el) => delete queryObj[el]);
 
-  // console.log(page, limit);
   const queryPage = Number(reqQuery.page) || 1;
   const queryLimit = Number(reqQuery.limit) || 10;
-  // const queryPage = page || 1;
-  // const queryLimit = limit || 10;
-  // console.log(queryPage, queryLimit);
-  // console.log(reqQuery);
-  // console.log(outputObject);
 
-  // const queryResult = await Course.find(reqMainQuery);
+  const { maxPrice: queryMaxPrice, minPrice: queryMinPrice } = reqQuery;
+
+  const queryTags = reqQuery.tags;
+  const queryLevel = reqQuery.level;
+
+  const { sortBy, sortOrder } = reqQuery;
+  if (queryMaxPrice || queryMinPrice) {
+    const sort:any = {};
+    if (sortBy) {
+      sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+    }
+
+    const queryResult = await Course.find({
+      $and: [
+        { price: { $gte: queryMinPrice } },
+        { price: { $lte: queryMaxPrice } },
+      ],
+    }).sort(sort);
+
+    const { allPageData, totalPages } = pagination(queryResult, queryLimit);
+    const meta: TMeta = {
+      page: totalPages,
+      limit: queryLimit,
+      total: queryResult.length,
+    };
+
+    const result = allPageData[queryPage - 1];
+    return { meta, result };
+  }
+
+  if (queryTags || queryLevel) {
+    const tagFilter = { tags: { $elemMatch: { name: queryTags } } };
+    const detailsLevelFilter = { 'details.level': queryLevel };
+    // console.log(queryTags);
+    const queryResult = await Course.find(
+      queryTags ? tagFilter : detailsLevelFilter,
+    );
+    // const queryResult = await Course.find(detailsLevelFilter);
+    const { allPageData, totalPages } = pagination(queryResult, queryLimit);
+    const meta: TMeta = {
+      page: totalPages,
+      limit: queryLimit,
+      total: queryResult.length,
+    };
+
+    const result = allPageData[queryPage - 1];
+    return { meta, result };
+  }
+
   const queryResult = await Course.find(queryObj);
-
-  const totalPages = Math.ceil(queryResult.length / queryLimit);
-  const allPageData = [];
-
-  function getPageData(pageNumber: number) {
-    const startIndex = (pageNumber - 1) * queryLimit;
-    const endIndex = startIndex + queryLimit;
-    return queryResult.slice(startIndex, endIndex);
-  }
-  for (let page = 1; page <= totalPages; page++) {
-    const pageData = getPageData(page);
-    allPageData.push(pageData);
-  }
-
+  const { allPageData, totalPages } = pagination(queryResult, queryLimit);
   const meta: TMeta = {
     page: totalPages,
-    limit: +queryLimit,
+    limit: queryLimit,
     total: queryResult.length,
   };
-  // console.log(meta);
-  // console.log(queryResult);
-  // return queryResult;
+
   const result = allPageData[queryPage - 1];
-  // console.log(page)
   return { meta, result };
-  // const result = await Course.find();
-  // return result;
 };
 
 const getCourseByIdWithReviewsFromDB = async (id: string) => {
