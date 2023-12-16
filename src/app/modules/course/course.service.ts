@@ -1,11 +1,12 @@
-import { pagination } from './query';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import httpStatus from 'http-status';
-// import AppError from '../../errors/AppError';
+
 import { Review } from '../review/review.model';
 import { courseExcludeFilteringFields } from './course.constant';
 import { TCourse, TMeta } from './course.interface';
 import { Course } from './course.model';
+import { pagination } from './query';
 
 const createCourseIntoDB = async (payload: TCourse) => {
   const result = await Course.create(payload);
@@ -25,12 +26,12 @@ const getAllCoursesFromDB = async (reqQuery: any) => {
   const queryLevel = reqQuery.level;
 
   const { sortBy, sortOrder } = reqQuery;
-  if (queryMaxPrice || queryMinPrice) {
-    const sort:any = {};
-    if (sortBy) {
-      sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
-    }
+  const sort: any = {};
+  if (sortBy) {
+    sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+  }
 
+  if (queryMaxPrice || queryMinPrice) {
     const queryResult = await Course.find({
       $and: [
         { price: { $gte: queryMinPrice } },
@@ -52,12 +53,13 @@ const getAllCoursesFromDB = async (reqQuery: any) => {
   if (queryTags || queryLevel) {
     const tagFilter = { tags: { $elemMatch: { name: queryTags } } };
     const detailsLevelFilter = { 'details.level': queryLevel };
-    // console.log(queryTags);
+
     const queryResult = await Course.find(
       queryTags ? tagFilter : detailsLevelFilter,
-    );
-    // const queryResult = await Course.find(detailsLevelFilter);
+    ).sort(sort);
+
     const { allPageData, totalPages } = pagination(queryResult, queryLimit);
+
     const meta: TMeta = {
       page: totalPages,
       limit: queryLimit,
@@ -68,7 +70,8 @@ const getAllCoursesFromDB = async (reqQuery: any) => {
     return { meta, result };
   }
 
-  const queryResult = await Course.find(queryObj);
+  const queryResult = await Course.find(queryObj).sort(sort);
+
   const { allPageData, totalPages } = pagination(queryResult, queryLimit);
   const meta: TMeta = {
     page: totalPages,
@@ -120,7 +123,6 @@ const getTheBestCourseFromDB = async () => {
   return { cResult, rResult, averageRating, reviewCount };
 };
 
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
   // const { preRequisiteCourses, ...courseRemainingData } = payload;
   // try {

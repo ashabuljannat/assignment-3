@@ -34,6 +34,13 @@
         if (sortBy) {
             sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
         }
-
+  // console.log(sort);
+  // console.log({ short: sortOrder === 'desc' ? -1 : 1 });
         // Find documents in the collection that match the filter and apply sorting
         const courses = await Course.find(filter).sort(sort);
+          // const queryResult = await Course.find(queryObj).sort({
+  //   sortBy: sortOrder === 'desc' ? -1 : 1,
+  // });
+      // const queryResult = await Course.find(detailsLevelFilter);
+         // console.log(queryTags);
+  
