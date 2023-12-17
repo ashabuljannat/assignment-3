@@ -136,10 +136,35 @@ const updateCourseIntoDB = async (id: string, payload: Partial<TCourse>) => {
       if (typeof update[key] === 'object' && !Array.isArray(update[key])) {
         updatedObject[key] = createUpdateObject(original[key], update[key]);
       } else {
-        updatedObject[key] = update[key];
+        if (key === 'tags') {
+          updatedObject[key] = mergeTags(original[key], update[key]);
+        } else {
+          updatedObject[key] = update[key];
+        }
       }
     }
+
     return updatedObject;
+  }
+
+  function mergeTags(tags1: any, tags2: any) {
+    const mergedTags = [];
+
+    for (const tag1 of tags1) {
+      const matchingTag2 = tags2.find((tag2: any) => tag1.name === tag2.name);
+      if (matchingTag2) {
+        mergedTags.push(matchingTag2);
+      } else {
+        mergedTags.push(tag1);
+      }
+    }
+    for (const tag2 of tags2) {
+      const matchingTag = mergedTags.find((tag) => tag.name === tag2.name);
+      if (!matchingTag) {
+        mergedTags.push(tag2);
+      }
+    }
+    return mergedTags;
   }
 
   const thirdData = createUpdateObject(queryDataResult, payload);

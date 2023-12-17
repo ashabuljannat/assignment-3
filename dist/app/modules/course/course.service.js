@@ -120,10 +120,34 @@ const updateCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, fu
                 updatedObject[key] = createUpdateObject(original[key], update[key]);
             }
             else {
-                updatedObject[key] = update[key];
+                if (key === 'tags') {
+                    updatedObject[key] = mergeTags(original[key], update[key]);
+                }
+                else {
+                    updatedObject[key] = update[key];
+                }
             }
         }
         return updatedObject;
+    }
+    function mergeTags(tags1, tags2) {
+        const mergedTags = [];
+        for (const tag1 of tags1) {
+            const matchingTag2 = tags2.find((tag2) => tag1.name === tag2.name);
+            if (matchingTag2) {
+                mergedTags.push(matchingTag2);
+            }
+            else {
+                mergedTags.push(tag1);
+            }
+        }
+        for (const tag2 of tags2) {
+            const matchingTag = mergedTags.find((tag) => tag.name === tag2.name);
+            if (!matchingTag) {
+                mergedTags.push(tag2);
+            }
+        }
+        return mergedTags;
     }
     const thirdData = createUpdateObject(queryDataResult, payload);
     // console.log(thirdData._doc);
