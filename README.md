@@ -277,7 +277,7 @@ i use query perams. mongdb oparetor
 ## **Submission:**
 
 - repo link : https://github.com/ashabuljannat/assignment-3
-- live link : https://github.com/ashabuljannat/assignment-3
+- live link : https://tame-gray-fox-veil.cyclic.app/api/courses/
 - video link: youtube 1:https://youtu.be/wSFWYHnopEY
   - 2:https://youtu.be/p562QoBpLIU
 
