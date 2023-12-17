@@ -1,366 +1,284 @@
-### Set up the Project
 
-- Create a new project by Node.js ,Express ,ts ,Mongoose ,zod .
-- Set up MongoDB database "test" and collection "users" using Mongoose.
-
-### User Management:
-
-### 1. Create a new user
-
-- Endpoint: **POST /api/users**
-
-- Request Body:
+### 1. Create a new course
 
 ```json
-{
-  "userId": 1,
-  "username": "jhon doe",
-  "password": "38fn39egbcmke0rhck",
-  "fullName": {
-    "firstName": "Jhon",
-    "lastName": "doe"
-  },
-  "age": 40,
-  "email": "jhondoe@gmail.com",
-  "isActive": "active",
-  "hobbies": ["study", "tour"],
-  "address": {
-    "street": "bonani",
-    "city": "dhaka",
-    "country": "bangladesh"
-  },
-  "orders": [
-    {
-      "productName": "pc",
-      "price": 500,
-      "quantity": 2
+await Course.create(req.body);
+```
+
+- Response: if course any field not given then show error
+
+```
+  {
+      "success": false,
+    "message": "Validation Error",
+    "errorMessage": "instructor is Required. price is Required.",
+    "errorDetails": {
+        "issues": [
+            {
+                "code": "invalid_type",
+                "expected": "string",
+                "received": "undefined",
+                "path": [
+                    "body",
+                    "instructor"
+                ],
+                "message": "Required"
+            },
+            {
+                "code": "invalid_type",
+                "expected": "number",
+                "received": "undefined",
+                "path": [
+                    "body",
+                    "price"
+                ],
+                "message": "Required"
+            }
+        ],
+        "name": "ZodError"
     },
-    {
-      "productName": "camera",
-      "price": 300,
-      "quantity": 5
+    "stack": "ZodError: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"body\",\n      \"instructor\"\n    ],\n    \"message\": \"Required\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"body\",\n      \"price\"\n    ],\n    \"message\": \"Required\"\n  }\n]\n    at Object.get error [as error] (F:\\ph-practice-level2-23\\assignment-3\\node_modules\\zod\\lib\\types.js:43:31)\n    at ZodObject.parseAsync (F:\\ph-practice-level2-23\\assignment-3\\node_modules\\zod\\lib\\types.js:166:22)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)"
+}
+```
+- Response: if course title is duplicatethen show error
+
+```
+  {
+  "success": false,
+    "message": "Validation Error",
+    "errorMessage": "instructor is Required. price is Required.",
+    "errorDetails": {
+        "issues": [
+            {
+                "code": "invalid_type",
+                "expected": "string",
+                "received": "undefined",
+                "path": [
+                    "body",
+                    "instructor"
+                ],
+                "message": "Required"
+            },
+            {
+                "code": "invalid_type",
+                "expected": "number",
+                "received": "undefined",
+                "path": [
+                    "body",
+                    "price"
+                ],
+                "message": "Required"
+            }
+        ],
+        "name": "ZodError"
+    },
+    "stack": "ZodError: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"body\",\n      \"instructor\"\n    ],\n    \"message\": \"Required\"\n  },\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"number\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"body\",\n      \"price\"\n    ],\n    \"message\": \"Required\"\n  }\n]\n    at Object.get error [as error] (F:\\ph-practice-level2-23\\assignment-3\\node_modules\\zod\\lib\\types.js:43:31)\n    at ZodObject.parseAsync (F:\\ph-practice-level2-23\\assignment-3\\node_modules\\zod\\lib\\types.js:166:22)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)"
+}
+```
+
+### 2. Retrieve a list of all coureses with  Pagination and Filtering and sort.
+
+```json
+i use query perams. mongdb oparetor 
+```
+### 3.  Create a Category
+
+```json
+{   "success": true,
+    "statusCode": 201,
+    "message": "Category created successfully",
+    "data": {
+        "name": "full stack development 2",
+        "_id": "657f17971a62dce1cc93c00c",
+        "__v": 0
     }
-  ]
 }
 ```
-
-- Response: created user object data. with no password field
+### 4.get all Categories
 
 ```json
-{
-  "success": true,
-  "message": "User created successfully!",
-  "data": {
-    "userId": "number",
-    "username": "string",
-    "fullName": {
-      "firstName": "string",
-      "lastName": "string"
-    },
-    "age": "number",
-    "email": "string",
-    "isActive": "boolean",
-    "hobbies": ["string", "string"],
-    "address": {
-      "street": "string",
-      "city": "string",
-      "country": "string"
-    },
-    "orders": [
-      {
-        "productName": "Product 1",
-        "price": 23.56,
-        "quantity": 2
-      },
-      {
-        "productName": "Product 2",
-        "price": 23.56,
-        "quantity": 5
-      }
+{  
+    "success": true,
+    "statusCode": 200,
+    "message": "Categories retrieved successfully",
+    "data": [
+        {
+            "_id": "657728957f4c14fa46a3a5cd",
+            "name": "Programming",
+            "__v": 0
+        },
+        {
+            "_id": "657728e07f4c14fa46a3a5d1",
+            "name": "Programming ",
+            "__v": 0
+        },
+        {
+            "_id": "65772919d3f5156012604357",
+            "name": "Programming 2",
+            "__v": 0
+        },
+        {
+            "_id": "65772a9bae97ba5c3906e2b4",
+            "name": "Programming-2",
+            "__v": 0
+        },
+        {
+            "_id": "65772b849388a61656611cef",
+            "name": "Programming-21",
+            "__v": 0
+        }
     ]
-  }
 }
 ```
 
-- Response: if userId exist then show error
 
-```
- throw new Error('User already exists!');
-```
-
-### Instruction ![#00b48a](https://via.placeholder.com/20/00b48a?text=+)
-
-- for hiding password field i use `select: false` in user model
-- also use destructure for get necessary data
-
-### 2. Retrieve a list of all users
-
-- Endpoint: **GET /api/users**
-- Response: List of users objects. Each object only contain `username`, `fullName`, `age`, `email`, `address`
+### 5. Create a Review
 
 ```json
 {
   "success": true,
-  "message": "Users fetched successfully!",
-  "data": [
-    {
-      "username": "string",
-      "fullName": {
-        "firstName": "string",
-        "lastName": "string"
-      },
-      "age": "number",
-      "email": "string",
-      "address": {
-        "street": "string",
-        "city": "string",
-        "country": "string"
-      }
+    "statusCode": 201,
+    "message": "Review created successfully",
+    "data": {
+        "courseId": "657f16a01a62dce1cc93bf17",
+        "rating": 5,
+        "review": "Great course 50!",
+        "_id": "657f18091a62dce1cc93c00f",
+        "__v": 0
     }
-  ]
 }
 ```
-
-### Instruction ![#00b48a](https://via.placeholder.com/20/00b48a?text=+)
-
-- for hiding password field i use `find().select('-password');` in find query
-- also use destructure for get necessary data
-
-### 3. Retrieve a specific user by ID
-
-- Endpoint: **GET /api/users/:userId**
-
-- Response: data of specific user objects.User object and the password field is not included in the response data.
+### 6. Update a Course (Partial Update with Dynamic Update)
 
 ```json
 {
-  "success": true,
-  "message": "User fetched successfully!",
-  "data": {
-    "userId": "number",
-    "username": "string",
-    "fullName": {
-      "firstName": "string",
-      "lastName": "string"
-    },
-    "age": "number",
-    "email": "string",
-    "isActive": "boolean",
-    "hobbies": ["string", "string"],
-    "address": {
-      "street": "string",
-      "city": "string",
-      "country": "string"
-    },
-    "orders": [
-      {
-        "productName": "Product 1",
-        "price": 23.56,
-        "quantity": 2
-      },
-      {
-        "productName": "Product 2",
-        "price": 23.56,
-        "quantity": 5
-      }
-    ]
-  }
+    $pull: {
+         tags: { name: { $in: tagsForDelete } },
+       }
 }
 ```
-
-- Response: if userId not exist then show error
-
-```
- throw new Error('User not found!');
-```
-
 ```json
-{
-  "success": false,
-  "message": "User id ${userId} not found",
-  "error": {
-    "code": 404,
-    "description": "User not found!"
-  }
+{   
+    {
+      $addToSet: { tags: { $each: tagsForUpdate } },
+    }
 }
 ```
 
-### 4. Update user information
+### 7. Get Course by ID with Reviews
 
-- Endpoint: **PUT /api/users/:userId**
-
-- Request Body: Updated user data (similar structure as in user creation).
-
-- Response: if data updated
-
-```json
-{
-  "success": true,
-  "message": "User id ${userId} updated successfully!",
-  "data": {
-    "modifiedCount": 1
-  }
-}
-```
-
-- Response: if data not to be updated
-
-```json
-{
-  "success": false,
-  "message": "you enter same data to User id ${userId}",
-  "data": {
-    "modifiedCount": 0
-  }
-}
-```
-
-- Response: if user not exist
-
-```json
-{
-  "success": false,
-  "message": "User id ${userId} not found",
-  "error": {
-    "code": 404,
-    "description": "User not found!"
-  }
-}
-```
-
-### 5. Delete a user
-
-- Endpoint: **DELETE /api/users/:userId**
+- Endpoint: **DELETE http://localhost:5000/api/courses/657f08786a473931dfd5104c/reviews**
 
 - Response: if user exixt
 
 ```json
 {
   "success": true,
-  "message": "User id 10 deleted successfully!",
-  "data": { "deletedCount": 1 }
+    "statusCode": 200,
+    "message": "Course and Reviews retrieved successfully",
+    "data": {
+        "course": {
+            "_id": "657f08786a473931dfd5104c",
+            "title": "Sample Course 15",
+            "instructor": "Jane Doe",
+            "categoryId": "65772919d3f5156012604357",
+            "price": 75,
+            "tags": [
+                {
+                    "name": "Web Development",
+                    "isDeleted": false,
+                    "_id": "657f0b726a473931dfd510bc"
+                },
+                {
+                    "name": "mern Development",
+                    "isDeleted": false,
+                    "_id": "657f0b846a473931dfd510c8"
+                }
+            ],
+            "startDate": "2023-05-15",
+            "endDate": "2023-05-30",
+            "language": "English",
+            "provider": "Tech Academy",
+            "details": {
+                "level": "Intermediate pro",
+                "_id": "657f0aa96a473931dfd51074"
+            },
+            "durationInWeeks": 3,
+            "__v": 0
+        },
+        "reviews": [
+            {
+                "_id": "657f09766a473931dfd51059",
+                "courseId": "657f08786a473931dfd5104c",
+                "rating": 3,
+                "review": "Great course 15!",
+                "__v": 0
+            },
+            {
+                "_id": "657f09fb6a473931dfd51061",
+                "courseId": "657f08786a473931dfd5104c",
+                "rating": 5,
+                "review": "Great course 15!",
+                "__v": 0
+            },
+            {
+                "_id": "657f13691a62dce1cc93be19",
+                "courseId": "657f08786a473931dfd5104c",
+                "rating": 4.5,
+                "review": "Great course 50!",
+                "__v": 0
+            }
+        ]
+    }
 }
 ```
+### 8. Get the Best Course Based on Average Review (Rating)
 
-- Response: if user not exixt
+- Response: if user exixt
 
 ```json
 {
-  "success": false,
-  "message": "User id ${userId} not found",
-  "error": {
-    "code": 404,
-    "description": "User not found!"
-  }
+    
+    "success": true,
+    "statusCode": 200,
+    "message": "Best course retrieved successfully",
+    "data": {
+        "course": {
+            "_id": "657f16a01a62dce1cc93bf17",
+            "title": "mern development pro",
+            "instructor": "Jane Doe",
+            "categoryId": "65772919d3f5156012604357",
+            "price": 30,
+            "tags": [
+                {
+                    "name": "Programming",
+                    "isDeleted": false,
+                    "_id": "657f16a01a62dce1cc93bf18"
+                },
+                {
+                    "name": "Web Development",
+                    "isDeleted": false,
+                    "_id": "657f16a01a62dce1cc93bf19"
+                }
+            ],
+            "startDate": "2023-05-15",
+            "endDate": "2023-05-30",
+            "language": "English",
+            "provider": "Tech Academy",
+            "details": {
+                "level": "Intermediate",
+                "description": "Detailed description of the course",
+                "_id": "657f16a01a62dce1cc93bf1a"
+            },
+            "durationInWeeks": 3,
+            "__v": 0
+        },
+        "averageRating": "5.000",
+        "reviewCount": 5
+    }
 }
 ```
 
-### Order Management:
-
-### 1. Add New Product in Order
-
-- Endpoint: **PUT /api/users/:userId/orders**
-
-- Request Body:
-
-```json
-{
-  "productName": "string",
-  "price": "number",
-  "quantity": "number"
-}
-```
-
-- Response:
-
-```json
-{
-  "success": true,
-  "message": "Order created successfully for User id ${userId} ",
-  "data": {
-    "modifiedCount": 1
-  }
-}
-```
-
-- Response: if user not exixt
-
-```json
-{
-  "success": false,
-  "message": "User id ${userId} not found",
-  "error": {
-    "code": 404,
-    "description": "User not found!"
-  }
-}
-```
-
-### 2. Retrieve all orders for a specific user
-
-- Endpoint: **GET /api/users/:userId/orders**
-
-- Response:
-
-```json
-{
-  "success": true,
-  "message": "Orders of User id 23 fetched successfully!",
-  "data": {
-    "_id": "6561d6ebd736390c2258da63",
-    "orders": [
-      {
-        "productName": "shirt",
-        "price": 150,
-        "quantity": 2,
-        "_id": "6562124d9105538477b5a42e"
-      }
-    ]
-  }
-}
-```
-
-- Response: if user not exixt
-
-```json
-{
-  "success": false,
-  "message": "User id ${userId} not found",
-  "error": {
-    "code": 404,
-    "description": "User not found!"
-  }
-}
-```
-
-### 3. **Calculate Total Price of Orders for a Specific User**
-
-- Endpoint: **GET /api/users/:userId/orders/total-price**
-
-- Response:
-
-```json
-{
-  "success": true,
-  "message": "Total price calculated successfully!",
-  "data": {
-    "totalPrice": 454.32
-  }
-}
-```
-
-- Response: if user not exist
-
-```json
-{
-  "success": false,
-  "message": "User id ${userId} not found",
-  "error": {
-    "code": 404,
-    "description": "User not found!"
-  }
-}
-```
 ## Validation with Zod
 
 - Using zod to validate incoming data for user and order creation and updating operations.
@@ -369,13 +287,15 @@
 
 ## **Submission:**
 
-- Share the GitHub repository link and the live deployment link as part of your submission.
-- Include a README file with clear instructions on how to run the application locally.
+- repo link : https://github.com/ashabuljannat/assignment-3
+- live link : https://github.com/ashabuljannat/assignment-3
+- video link: youtube 1:https://youtu.be/wSFWYHnopEY 
+    - 2:https://youtu.be/p562QoBpLIU
 
 ## Instruction form me
 
   1. **run this program:**
   - run `tsc` for compile the code to js
-  - run `npm run start:nodemon` for start code in node server
+  - run `npm run start:dev` for start code in ts-node-dev server
   - run `npm run lint` for catch eslint error
   - run `npm run prettier` for code formatter
