@@ -32,5 +32,5 @@ const getAllCategoryFromDB = (query) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.CategoryServices = {
     createCategoryIntoDB,
-    getAllCategoryFromDB
+    getAllCategoryFromDB,
 };

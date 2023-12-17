@@ -11,8 +11,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CourseServices = void 0;
+const http_status_1 = __importDefault(require("http-status"));
+const AppError_1 = __importDefault(require("../../errors/AppError"));
 const review_model_1 = require("../review/review.model");
 const course_constant_1 = require("./course.constant");
 const course_model_1 = require("./course.model");
@@ -111,106 +127,41 @@ const getTheBestCourseFromDB = () => __awaiter(void 0, void 0, void 0, function*
     return { cResult, rResult, averageRating, reviewCount };
 });
 const updateCourseIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(id, payload);
-    const queryDataResult = yield course_model_1.Course.findById(id);
-    function createUpdateObject(original, update) {
-        const updatedObject = Object.assign({}, original);
-        for (const key in update) {
-            if (typeof update[key] === 'object' && !Array.isArray(update[key])) {
-                updatedObject[key] = createUpdateObject(original[key], update[key]);
+    const { tags } = payload, courseRemainingData = __rest(payload, ["tags"]);
+    try {
+        const updatedBasicCourseInfo = yield course_model_1.Course.findByIdAndUpdate(id, courseRemainingData, { new: true, runValidators: true });
+        if (!updatedBasicCourseInfo) {
+            throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to update course');
+        }
+        if (tags && tags.length > 0) {
+            const tagsForDelete = tags
+                .filter((el) => el.name && el.isDeleted)
+                .map((el) => el.name);
+            const deleteTag = yield course_model_1.Course.findByIdAndUpdate(id, {
+                $pull: {
+                    tags: { name: { $in: tagsForDelete } },
+                },
+            }, {
+                new: true,
+                runValidators: true,
+            });
+            if (!deleteTag) {
+                throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to update course');
             }
-            else {
-                if (key === 'tags') {
-                    updatedObject[key] = mergeTags(original[key], update[key]);
-                }
-                else {
-                    updatedObject[key] = update[key];
-                }
+            const tagsForUpdate = tags.filter((el) => el.name && !el.isDeleted);
+            const updateTag = yield course_model_1.Course.findByIdAndUpdate(id, {
+                $addToSet: { tags: { $each: tagsForUpdate } },
+            }, { new: true, runValidators: true });
+            if (!updateTag) {
+                throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Failed to update course');
             }
         }
-        return updatedObject;
+        const result = yield course_model_1.Course.findById(id);
+        return result;
     }
-    function mergeTags(tags1, tags2) {
-        const mergedTags = [];
-        for (const tag1 of tags1) {
-            const matchingTag2 = tags2.find((tag2) => tag1.name === tag2.name);
-            if (matchingTag2) {
-                mergedTags.push(matchingTag2);
-            }
-            else {
-                mergedTags.push(tag1);
-            }
-        }
-        for (const tag2 of tags2) {
-            const matchingTag = mergedTags.find((tag) => tag.name === tag2.name);
-            if (!matchingTag) {
-                mergedTags.push(tag2);
-            }
-        }
-        return mergedTags;
+    catch (err) {
+        throw new AppError_1.default(http_status_1.default.BAD_REQUEST, 'catch Failed to update course');
     }
-    const thirdData = createUpdateObject(queryDataResult, payload);
-    // console.log(thirdData._doc);
-    const updatedBasicCourseInfo = yield course_model_1.Course.findByIdAndUpdate(id, payload, {
-        new: true,
-        runValidators: true,
-    });
-    // const { preRequisiteCourses, ...courseRemainingData } = payload;
-    // const { tags, ...courseRemainingData } = payload;
-    // try {
-    //   //step1: basic course info update
-    //   const updatedBasicCourseInfo = await Course.findByIdAndUpdate(
-    //     id,
-    //     courseRemainingData,
-    //     { new: true, runValidators: true },
-    //   );
-    //   if (!updatedBasicCourseInfo) {
-    //     throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
-    //   }
-    //   // check if there is any pre requisite courses to update
-    //   if (tags && tags.length > 0) {
-    //     // filter out the deleted fields
-    //     const deletedPreRequisites = tags
-    //       .filter((el: { name: any; isDeleted: any }) => el.name && el.isDeleted)
-    //       .map((el: { name: any }) => el.name);
-    //     const deletedPreRequisiteCourses = await Course.findByIdAndUpdate(
-    //       id,
-    //       {
-    //         $pull: {
-    //           preRequisiteCourses: { course: { $in: deletedPreRequisites } },
-    //         },
-    //       },
-    //       {
-    //         new: true,
-    //         runValidators: true,
-    //       },
-    //     );
-    //     if (!deletedPreRequisiteCourses) {
-    //       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
-    //     }
-    //     // filter out the new course fields
-    //     const newPreRequisites = tags?.filter(
-    //       (el: { name: any; isDeleted: any }) => el.name && !el.isDeleted,
-    //     );
-    //     const newPreRequisiteCourses = await Course.findByIdAndUpdate(
-    //       id,
-    //       {
-    //         $addToSet: { preRequisiteCourses: { $each: newPreRequisites } },
-    //       },
-    //       { new: true, runValidators: true },
-    //     );
-    //     if (!newPreRequisiteCourses) {
-    //       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update course');
-    //     }
-    //     const result = await Course.findById(id).populate(
-    //       'preRequisiteCourses.course',
-    //     );
-    //     return result;
-    //   }
-    // } catch (err) {
-    //   throw new AppError(httpStatus.BAD_REQUEST, 'catch Failed to update course');
-    // }
-    return updatedBasicCourseInfo;
 });
 exports.CourseServices = {
     createCourseIntoDB,

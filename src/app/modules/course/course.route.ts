@@ -3,7 +3,7 @@ import validateRequest from '../../middlewares/validateRequest';
 import { CourseControllers } from './course.controller';
 import { CourseValidations } from './course.validation';
 
-const router = express.Router(); 
+const router = express.Router();
 
 router.post(
   '/',

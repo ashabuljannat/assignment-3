@@ -26,9 +26,7 @@ const getAllCategoryFromDB = async (query: Record<string, unknown>) => {
   return result;
 };
 
-
-
 export const CategoryServices = {
   createCategoryIntoDB,
-  getAllCategoryFromDB
+  getAllCategoryFromDB,
 };

@@ -72,7 +72,6 @@ const updateCourse = catchAsync(async (req, res) => {
   });
 });
 
-
 export const CourseControllers = {
   createCourse,
   getCourseByIdWithReviews,

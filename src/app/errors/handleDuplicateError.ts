@@ -12,7 +12,7 @@ const handleDuplicateError = (err: any): TGenericErrorResponse => {
   ];
   const statusCode = 400;
 
-  return { 
+  return {
     statusCode,
     message: 'Invalid Duplicate Creation',
     errorSources,

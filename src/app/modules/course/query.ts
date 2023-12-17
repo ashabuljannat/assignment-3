@@ -12,5 +12,5 @@ export const pagination = (queryResult: any, queryLimit: number) => {
     const pageData = getPageData(page);
     allPageData.push(pageData);
   }
-  return {allPageData,totalPages};
+  return { allPageData, totalPages };
 };

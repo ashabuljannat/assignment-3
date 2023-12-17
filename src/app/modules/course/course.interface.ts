@@ -11,17 +11,17 @@ export type TTags = {
   isDeleted: boolean;
 };
 
-export type TDetails = { 
+export type TDetails = {
   level: string;
   description: string;
 };
 
 export type TReview = {
-  courseId:  Types.ObjectId;
+  courseId: Types.ObjectId;
   rating: number;
   review: string;
 };
- 
+
 export type TCourse = {
   title: string;
   instructor: string;
@@ -33,6 +33,6 @@ export type TCourse = {
   language: string;
   provider: string;
   durationInWeeks: number;
-  details: TDetails
+  details: TDetails;
   // review:[Types.ObjectId]
 };

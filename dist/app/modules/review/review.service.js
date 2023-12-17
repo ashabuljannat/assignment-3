@@ -24,14 +24,14 @@ const createReviewIntoDB = (payload) => __awaiter(void 0, void 0, void 0, functi
 });
 const getAllCoursesFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
     // const courseQuery = new QueryBuilder(
-    //   Review.find().populate('preRequisiteCourses.course'), 
+    //   Review.find().populate('preRequisiteCourses.course'),
     //   query,
     // )
     //   .search(CourseSearchableFields)
     //   .filter()
     //   .sort()
     //   .paginate()
-    //   .fields(); 
+    //   .fields();
     // const result = await courseQuery.modelQuery;
     // return result;
 });
@@ -44,5 +44,5 @@ const getSingleCourseFromDB = (id) => __awaiter(void 0, void 0, void 0, function
 exports.ReviewServices = {
     createReviewIntoDB,
     getAllCoursesFromDB,
-    getSingleCourseFromDB
+    getSingleCourseFromDB,
 };
